@@ -2,21 +2,37 @@
 
 namespace HtmlUtil {
 	type DragData = {
+		id: string,
 		number: number,
 		zone: number
 	};
 
+	const dragData = { id: "", number: 0, zone: 0 } as DragData;
+
 	function getDragData(drag: DataTransfer): DragData | null {
-		const raw = drag.getData("text");
-		if (raw) {
-			try {
-				return JSON.parse(raw) as DragData;
-			}
-			catch {
-				//NOOP
-			}
+		const id = drag.getData("text");
+		if (id === dragData.id) {
+			return dragData;
 		}
 		return null;
+	}
+
+	function setDragData(drag: DataTransfer, item: HTMLElement) {
+		const itemData = App.getItem(Number(item.dataset.number));
+		if (itemData) {
+			drag.clearData();
+			dragData.number = Number(item.dataset.number);
+			dragData.zone = +itemData.zone;
+			dragData.id = DataProtection.GetRandomId();
+
+			drag.setData("text", dragData.id);
+			console.log("Drag start for:", dragData);
+			return true;
+		}
+		else {
+			console.log("No item found");
+		}
+		return false;
 	}
 
 	export function setNameVisible(visible: boolean) {
@@ -65,19 +81,7 @@ namespace HtmlUtil {
 				return;
 			}
 			if (ev.target instanceof HTMLElement) {
-				const item = App.getItem(Number(ev.target.dataset.number));
-				if (item) {
-					ev.dataTransfer.clearData();
-					const data = {
-						number: Number(ev.target.dataset.number),
-						zone: +item.zone
-					} as DragData;
-					ev.dataTransfer.setData("text", JSON.stringify(data));
-					console.log("Drag start for:", data);
-				}
-				else {
-					console.log("No item found");
-				}
+				setDragData(ev.dataTransfer, ev.target);
 			}
 		});
 		e.addEventListener("click", function (ev) {
@@ -179,10 +183,6 @@ namespace HtmlUtil {
 		for (let zone of zones) {
 			zone.parentElement!.addEventListener("drop", function (e) {
 				if (e.dataTransfer) {
-					const raw = e.dataTransfer.getData("text");
-					if (!raw) {
-						return;
-					}
 					const data = getDragData(e.dataTransfer);
 					if (!data) {
 						console.log("Cannot get drag data");
