@@ -1,0 +1,23 @@
+body {
+	padding-bottom: 10em;
+}
+
+.number-item {
+	cursor: pointer;
+}
+
+.number-item p {
+	margin: 0;
+}
+
+.hide-name .label-name {
+	display: none;
+}
+
+.zone {
+	border-left: 1px solid #000;
+}
+
+h2[data-zone] {
+	cursor: pointer;
+}
