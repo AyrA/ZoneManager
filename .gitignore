@@ -1,0 +1,4 @@
+*.tsbuildinfo
+build/
+js/
+
