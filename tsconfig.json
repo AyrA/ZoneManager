@@ -1,0 +1,13 @@
+{
+	"compileOnSave": true,
+	"compilerOptions": {
+		"removeComments": true,
+		"outDir": "build",
+		"strict": true,
+		"target": "ESNext",
+		"rootDir": "./ts"
+	},
+	"include": [
+		"ts/*.ts"
+	]
+}
